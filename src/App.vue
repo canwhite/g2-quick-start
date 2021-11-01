@@ -6,8 +6,19 @@
 </template>
 
 <script>
+//引入滑块
+import Slider from '@antv/g2/lib/chart/controller/slider';
+//引入滚动条
+import Scrollbar from '@antv/g2/lib/chart/controller/scrollbar';
 
-import {Chart} from '@antv/g2';
+import {Chart,registerComponentController} from '@antv/g2';
+
+// 引入 slider 组件
+registerComponentController('slider', Slider);
+
+registerComponentController('scrollbar', Scrollbar);
+
+
 export default {
   data(){
     return{
@@ -76,7 +87,7 @@ export default {
       //4.提示信息-------------------------------------------
       chart.tooltip({
         //showCrosshairs: true, // 展示 Tooltip 辅助线，中间会多条线
-        showMarkers:false,
+        showMarkers:false,//?
         shared: true
         //shared属性开启，相当于两个柱在一起的时候合并数据项
         //同时结合 'active-region' 交互行为，就能显示一个选中区域了
@@ -100,18 +111,18 @@ export default {
       //设置不同的样式，需要不同的几何图形
       //常用的有line，point，interval(区间图，柱饼环)
 
-      //eg:折线图和折线图上的点，可以对点和线的颜色进行一些配置
+      //eg:柱状图和柱状图上的点，可以对点和线的颜色进行一些配置
       chart
         .interval()
         .position('year*value')
         .label('value')
         //折线图上显示内容,line对图例和颜色的支持并不良好
         //interval的效果就好很多
-        .color("value","blue"); 
+        .color("value","blue")
         //有了color，就可以设置图例了，interval的显示良好
 
-        /* .adjust('stack')
-        stack(层叠），将同一个分类的数据值累加起来。
+        //.adjust('stack')
+        /*stack(层叠），将同一个分类的数据值累加起来。
         以层叠的柱状图为例，x 轴方向的同一个分类下面的数据，按照顺序，
         将 y 轴对应的值累加，最终将数据调整的不再重叠。 */
 
@@ -119,6 +130,7 @@ export default {
 
 
       //7.图例----------------------------------------------
+      //不同类别的色块
       /* 
       // 隐藏
       chart.legend(false); // 隐藏全部图例
@@ -128,20 +140,57 @@ export default {
       }); // 只更改 x 维度对应的图例的显示位置
 
       */
-
-
-     
-     //显示在某个位置
-     //注意：如果要使用图例，依赖于对图形颜色的配置
-     //要不然不会显示
+      //显示在某个位置
+      //注意：如果要使用图例，依赖于对图形颜色的配置
+      //要不然不会显示
       chart.legend({
         position: 'right',
       });
 
 
 
-      //ps:交互方式-------------------------------------------
+      //ps1:交互方式-------------------------------------------
+      //鼠标选中显示的方式
       chart.interaction("active-region"); 
+
+
+      //ps2:滑块----------------------------------------------
+      //end,可以定义默认显示到什么位置
+      /* chart.option('slider', {
+        end: 0.5,
+      }); */
+
+
+
+      //ps3:滚动条-------------------------------------------
+      //当宽度不够的时候滚动条就起作用了
+      /* chart.option('scrollbar', {
+        // 滚动条类型： 'horizontal' / 'vertical'
+        type: 'horizontal',
+      }); */
+
+
+      //ps4:几种事件----------------------------------------
+      //axis和动画图例什么的可以设置事件监听
+      //eg:axis
+      //chart.on('axis-label:click', (ev) => {});
+
+
+      //ps5:动画--------------------------------------------
+      //貌似看不出来啥效果
+      /* chart.animate({
+        //appear、enter、update、leave
+        hotUpdate: {
+          animation: 'fade-in', // 动画名称
+          easing: 'easeQuadIn', // 动画缓动效果
+          delay: 100, // 动画延迟执行时间
+          duration: 600 // 动画执行时间
+        }
+      }); */
+
+
+
+
 
 
       //8.配置完的绘制----------------------------------------
