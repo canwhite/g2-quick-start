@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- 我们用一个基础的线来完成学习 -->
+    <!-- 我们用一个基础的柱+点来完成学习 -->
     <div id="basic-line"> </div>
   </div>
 </template>
