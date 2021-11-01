@@ -36,7 +36,7 @@ export default {
         { year: '1998', value: 9 },
         { year: '1999', value: 13 },
       ];
-      //1.创建图表实例
+      //1.创建图表实例-----------------------------------
       const chart = new Chart({
         container: 'basic-line',
         autoFit: false,
@@ -44,11 +44,11 @@ export default {
         height: 500,
       });
       
-      //2.设置数据
+      //2.设置数据-------------------------------------
       chart.data(data);
 
 
-      //3.坐标轴内容和样式
+      //3.坐标轴内容和样式-----------------------------
       //(1)scale设置坐标上的具体内容
       chart.scale({
         year: {
@@ -73,60 +73,78 @@ export default {
         }
       })
 
-      //4.图例
+      //4.提示信息-------------------------------------------
+      chart.tooltip({
+        //showCrosshairs: true, // 展示 Tooltip 辅助线，中间会多条线
+        showMarkers:false,
+        shared: true
+        //shared属性开启，相当于两个柱在一起的时候合并数据项
+        //同时结合 'active-region' 交互行为，就能显示一个选中区域了
+        
+      });
+
+
+    
+      //5.如果是饼状图，涉及到坐标系,这种是极坐标系---------------------------
+      /* chart.coordinate('theta', {
+        radius: 0.75,
+        //加内部半径就可以换程环状图，去掉就是饼图
+        innerRadius: 0.6,
+      });
+      */
+
+      
+
+
+      //6.几何图形--------------------------------------------
+      //设置不同的样式，需要不同的几何图形
+      //常用的有line，point，interval(区间图，柱饼环)
+
+      //eg:折线图和折线图上的点，可以对点和线的颜色进行一些配置
+      chart
+        .interval()
+        .position('year*value')
+        .label('value')
+        //折线图上显示内容,line对图例和颜色的支持并不良好
+        //interval的效果就好很多
+        .color("value","blue"); 
+        //有了color，就可以设置图例了，interval的显示良好
+
+        /* .adjust('stack')
+        stack(层叠），将同一个分类的数据值累加起来。
+        以层叠的柱状图为例，x 轴方向的同一个分类下面的数据，按照顺序，
+        将 y 轴对应的值累加，最终将数据调整的不再重叠。 */
+
+      chart.point().position('year*value');
+
+
+      //7.图例----------------------------------------------
+      /* 
       // 隐藏
-      /* ------------------------------------------------
       chart.legend(false); // 隐藏全部图例
       chart.legend('x', false); // 只隐藏 x 维度对应的图例 
       chart.legend('x', {
         position: 'bottom',
       }); // 只更改 x 维度对应的图例的显示位置
 
-      --------------------------------------------------*/
+      */
+
+
      
      //显示在某个位置
-     
-      chart.legend("value",{
-        position:"right"
-      })
-
-
-
-      //5.提示信息
-      chart.tooltip({
-        showCrosshairs: true, // 展示 Tooltip 辅助线，中间会多条线
-        shared: true,
+     //注意：如果要使用图例，依赖于对图形颜色的配置
+     //要不然不会显示
+      chart.legend({
+        position: 'right',
       });
 
 
-      
+
+      //ps:交互方式-------------------------------------------
+      chart.interaction("active-region"); 
 
 
-      //6.如果是饼状图，涉及到坐标系
-
-
-
-      
-
-
-      //7.几何图形,设置不同的样式，需要不同的几何图形
-      //常用的有line，point，interval(区间图，柱饼环)
-
-      //eg:折线图和折线图上的点
-      //在这个阶段实际上还可以通过链式语法对样式和内容进行更改
-      //不过尽量可以做到前边，这里智识一个补充
-      chart
-        .line()
-        .position('year*value')
-        .label('value');
-      chart.point().position('year*value');
-
-
-      //ps:交互方式
-
-
-
-      //8.配置完的绘制
+      //8.配置完的绘制----------------------------------------
       chart.render();
     }
   }
