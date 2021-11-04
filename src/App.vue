@@ -12,7 +12,7 @@ import Slider from '@antv/g2/lib/chart/controller/slider';
 import Scrollbar from '@antv/g2/lib/chart/controller/scrollbar';
 
 import {Chart,registerComponentController} from '@antv/g2';
-
+import DataSet from '@antv/data-set'
 // 引入 slider 组件
 registerComponentController('slider', Slider);
 
@@ -84,10 +84,10 @@ export default {
         }
       })
 
-      //4.提示信息-------------------------------------------
+      //4.提示信息，冒泡提示-------------------------------------------
       chart.tooltip({
         //showCrosshairs: true, // 展示 Tooltip 辅助线，中间会多条线
-        showMarkers:false,//?
+        showMarkers:false,//是否渲染 tooltipMarkers。去不去区别不大
         shared: true
         //shared属性开启，相当于两个柱在一起的时候合并数据项
         //同时结合 'active-region' 交互行为，就能显示一个选中区域了
@@ -191,13 +191,109 @@ export default {
 
 
 
+      //ps6:view图层--------------------------------------------
+
+      //设置view图层，可以设置不同的view
+      //一个 View 可以包含有多个子 View，通过这种嵌套关系，可以将一个画布按照不同的布局划分多个不同区域（分面），
+      //也可以将不同数据源的多个 View 叠加到一起，形成一个多数据源，多图层的图表。
+      //eg:
+
+      /*
+        import { Chart } from '@antv/g2';
+
+        // step 1: 需要创建 chart 对象
+        const chart = new Chart({
+          container: 'container',
+          autoFit: false,
+          width: 1000,
+          height: 500,
+        });
+
+        // step 2: 然后创建一个视图
+        const view = chart.createView({
+          region: {
+            start: { x: 0.2, y: 0.2 }, // 指定该视图绘制的起始位置，x y 为 [0 - 1] 范围的数据
+            end: { x: 1, y: 1 }, // 指定该视图绘制的结束位置，x y 为 [0 - 1] 范围的数据
+          },
+          padding: [20, 40], // 指定视图的留白
+        });
+
+
+        
+        //-为了让用户更好更快速得指定视图的绘制区域，region 中的 start 和 end 这两个参数只接受 0 至 1 范围的数据。
+        //-不指定 region，则默认为父 view 的绘图区域大小。
+        //-View 的绘制起始点是画布左上角。
+        
+        //创建好 view 之后，就可以同 chart 一样载入数据，使用图形语法进行图表的绘制了，语法同 chart。
+        
+        view.data(data); // 为 View 载入数据
+        view.interval().position('x*y').color('x'); // 使用图形语法绘制图表
+
+        chart.render(); // 由 chart 负责统一的渲染
+
+      */
+
+      //ps7:dataView和transform--------------------------------------------
+      //dataView数据视图，最终这里的数据会被渲染成视图
+      //通过transform可以对view中的数据进行转换处理
+      //主要是用于dataView，数据视图，创建dataView，然后通过示例去处理数据
+      //另外，这个东西比较鸡肋，有些时候我们可以自己把数据处理好，再传 
+      
+      const testCSV = `Expt,Run,Speed
+        1,1,850
+        1,2,740
+        1,3,900
+        1,4,1070`;
+
+        const dv = new DataSet.DataView().source(testCSV, {
+          type: 'csv',
+        });
+        console.log(dv.rows);
+        /*
+        * dv.rows:
+        * [
+        *   {Expt: " 1", Run: "1", Speed: "850"}
+        *   {Expt: " 1", Run: "2", Speed: "740"}
+        *   {Expt: " 1", Run: "3", Speed: "900"}
+        *   {Expt: " 1", Run: "4", Speed: "1070"}
+        * ]
+        */
+
+        dv.transform({
+          type: 'filter',
+          callback(row) {
+            return row.Run !== '1';
+          },
+        });
+        console.log(dv.rows);
+        /*
+        * dv.rows:
+        * [
+        *   {Expt: " 1", Run: "2", Speed: "740"}
+        *   {Expt: " 1", Run: "3", Speed: "900"}
+        *   {Expt: " 1", Run: "4", Speed: "1070"}
+        * ]
+        * */
+
+       /*视图的层叠
+        // 创建一个dataview 
+        const mainMap = ds.createView('back').source(mainData, { type: 'GeoJSON' })
+        // 通过chart创建主视图，这是个view
+        const mainMapView = chart.createView()
+        //然后给主视图设置dataview
+        mainMapView.data(mainMap.rows)//通过rows去拿到数据
+
+       */
+
+
+
+
 
 
       //8.配置完的绘制----------------------------------------
       chart.render();
     }
   }
-
 }
 
 
