@@ -76,6 +76,7 @@ export default {
         },
       });
       //(2)axis设置坐标轴的样式
+
       chart.axis("value",{
         title:{
           style:{
@@ -85,12 +86,15 @@ export default {
       })
 
       //4.提示信息，冒泡提示-------------------------------------------
+      //辅助线细节处理
       chart.tooltip({
         //showCrosshairs: true, // 展示 Tooltip 辅助线，中间会多条线
         showMarkers:false,//是否渲染 tooltipMarkers。去不去区别不大
-        shared: true
+        shared: true,
         //shared属性开启，相当于两个柱在一起的时候合并数据项
         //同时结合 'active-region' 交互行为，就能显示一个选中区域了
+        type:"y",
+
         
       });
 
